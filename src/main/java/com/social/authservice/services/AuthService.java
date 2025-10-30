@@ -1,5 +1,6 @@
 package com.social.authservice.services;
 
+import com.social.authservice.models.Token;
 import com.social.authservice.models.User;
 import org.antlr.v4.runtime.misc.Pair;
 
@@ -10,7 +11,7 @@ public interface AuthService {
             String password,
             String phoneNumber
     );
-    Pair<User,String> login(
+    Token login(
             String email,
             String password
     );

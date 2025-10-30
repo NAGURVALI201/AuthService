@@ -3,7 +3,9 @@ package com.social.authservice.controllers;
 
 import com.social.authservice.dtos.LoginRequestDto;
 import com.social.authservice.dtos.SignupRequestDto;
+import com.social.authservice.dtos.TokenDto;
 import com.social.authservice.dtos.UserDto;
+import com.social.authservice.models.Token;
 import com.social.authservice.models.User;
 import com.social.authservice.services.AuthService;
 import org.antlr.v4.runtime.misc.Pair;
@@ -38,13 +40,14 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserDto> login(@RequestBody LoginRequestDto loginRequestDto){
-        Pair<User,String> userWithToken = authService.login(
+    public ResponseEntity<TokenDto> login(@RequestBody LoginRequestDto loginRequestDto){
+        Token token = authService.login(
                 loginRequestDto.getEmail(),
                 loginRequestDto.getPassword()
         );
-        UserDto userDto = toUserDto(userWithToken.a);
-        return new ResponseEntity<>(userDto, HttpStatus.OK);
+
+
+        return new ResponseEntity<>(toTokenDto(token), HttpStatus.OK);
     }
 
     public UserDto toUserDto(User user){
@@ -56,5 +59,13 @@ public class AuthController {
         userDto.setRoles(user.getRoles());
 
         return userDto;
+    }
+    public TokenDto toTokenDto(Token token){
+        TokenDto tokenDto = new TokenDto();
+        tokenDto.setEmail(token.getUser().getEmail());
+        tokenDto.setToken(token.getValue());
+        tokenDto.setRoles(token.getUser().getRoles());
+
+        return tokenDto;
     }
 }
