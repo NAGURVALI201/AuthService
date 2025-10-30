@@ -15,4 +15,6 @@ public interface AuthService {
             String email,
             String password
     );
+
+    User validateToken(String token);
 }

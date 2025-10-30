@@ -11,10 +11,7 @@ import com.social.authservice.services.AuthService;
 import org.antlr.v4.runtime.misc.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -40,18 +37,24 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenDto> login(@RequestBody LoginRequestDto loginRequestDto){
+    public ResponseEntity<String> login(@RequestBody LoginRequestDto loginRequestDto){
         Token token = authService.login(
                 loginRequestDto.getEmail(),
                 loginRequestDto.getPassword()
         );
+        return new ResponseEntity<>(token.getValue(), HttpStatus.OK);
+    }
 
-
-        return new ResponseEntity<>(toTokenDto(token), HttpStatus.OK);
+    @GetMapping("/validate")
+    public UserDto ValidateToken(@RequestHeader("token") String tokenValue){
+        User user = authService.validateToken(tokenValue);
+        return toUserDto(user);
     }
 
     public UserDto toUserDto(User user){
-
+        if(user == null){
+            return null;
+        }
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
         userDto.setEmail(user.getEmail());

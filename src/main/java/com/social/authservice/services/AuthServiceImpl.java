@@ -2,6 +2,7 @@ package com.social.authservice.services;
 
 
 
+import com.social.authservice.exceptions.InvalidTokenException;
 import com.social.authservice.exceptions.PasswordMismatchException;
 import com.social.authservice.exceptions.UserAlreadyExistException;
 import com.social.authservice.exceptions.UserNotSignedException;
@@ -78,5 +79,18 @@ public class AuthServiceImpl implements AuthService{
 
         return tokenRepository.save(token);
 
+    }
+
+    @Override
+    public User validateToken(String tokenValue) {
+
+        Optional<Token> optionalToken = tokenRepository.
+                findByValueAndExpiresAtAfter(tokenValue,new Date());
+
+        if(optionalToken.isEmpty()){
+            // The token is not valid or expired
+            return null;
+        }
+        return optionalToken.get().getUser();
     }
 }
