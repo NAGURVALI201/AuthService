@@ -83,7 +83,6 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     public User validateToken(String tokenValue) {
-
         Optional<Token> optionalToken = tokenRepository.
                 findByValueAndExpiresAtAfter(tokenValue,new Date());
 
